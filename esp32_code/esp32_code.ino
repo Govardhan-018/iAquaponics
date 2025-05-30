@@ -7,12 +7,15 @@ const char* ssid = "Suspected";
 const char* password = "just-go123";
 
 // For HTTP data upload
-const char* httpServer = "http://192.168.173.131:3000/upload"; // Change to your IP
+const char* server = "192.168.173.131";
+String httpServer = "http://" + String(server) + ":3000/upload";
+
 
 // For WebSocket to receive LED control commands
 WebSocketsClient webSocket;
 
-const int ledPin = 2;
+const int motorPin = 2;
+const int valPin = 3;
 
 void webSocketEvent(WStype_t type, uint8_t* payload, size_t length) {
   if (type == WStype_TEXT) {
@@ -26,20 +29,28 @@ void webSocketEvent(WStype_t type, uint8_t* payload, size_t length) {
     }
 
     const char* msgType = doc["type"];
-    if (msgType && strcmp(msgType, "led") == 0) {
-      bool ledState = doc["state"];
-      digitalWrite(ledPin, ledState ? HIGH : LOW);
-      Serial.print("LED set to: ");
-      Serial.println(ledState ? "ON" : "OFF");
+    if (msgType) {
+      if (strcmp(msgType, "motor") == 0) {
+        bool motorState = doc["state"];
+        digitalWrite(motorPin, motorState == 1 ? HIGH : LOW);  // if active LOW
+        Serial.print("Motor set to: ");
+        Serial.println(motorState);
+      } else if (strcmp(msgType, "valve") == 0) {
+        bool valState = doc["state"];
+        digitalWrite(valPin, valState == 1 ? HIGH : LOW);
+        Serial.print("Valve set to: ");
+        Serial.println(valState);
+      }
     }
   }
 }
 
+
 void setup() {
   Serial.begin(115200);
   WiFi.begin(ssid, password);
-  pinMode(ledPin, OUTPUT);
-
+  pinMode(motorPin, OUTPUT);
+  pinMode(valPin, OUTPUT);
   Serial.println("Connecting to WiFi...");
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
@@ -48,12 +59,13 @@ void setup() {
   Serial.println("\nWiFi connected");
 
   // CONNECT TO RAW WEBSOCKET (not socket.io)
-  webSocket.begin("192.168.173.131", 3000, "/espws"); // This must match server path
+  webSocket.begin(server, 3000, "/espws");  // This must match server path
   webSocket.onEvent(webSocketEvent);
+  webSocket.setReconnectInterval(5000);  // Reconnect every 5 seconds if disconnected
 }
 
 unsigned long lastSentTime = 0;
-const long interval = 10000; // Send sensor data every 10 sec
+const long interval = 10000;  // Send sensor data every 10 sec
 
 void loop() {
   webSocket.loop();

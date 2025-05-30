@@ -1,0 +1,76 @@
+*{
+    padding: 0%;
+    margin: 0%;
+    color: white;
+}
+
+#back{
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 100vw;
+    max-height: 100vh;
+    object-fit: cover;
+    z-index: -1;
+}
+
+.container{
+    height: 99vh;
+    width: 99vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+nav{
+    position: fixed;
+    top: 10px;
+    font-size: 40px;
+}
+
+.box{
+    display: grid;
+    margin-top: 70px;
+    height: 70vh;
+    width: 75vw;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 2fr 2fr;
+}
+.bt{
+    width: 35vw;
+    height: 10vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 10px;
+}
+.temp{
+    grid-column: 1/3;
+    grid-row: 1/2;
+}
+.tds{
+  grid-column: 3/5;
+    grid-row: 1/2;
+}
+.humidity{
+    grid-column: 1/3;
+    grid-row: 2/3;
+    
+}
+.level{
+    grid-column:3/5;
+    grid-row:2/3;
+}
+.align{
+    display: flex;
+    justify-content: center;
+    margin: 20px;
+     background-color: rgba(255, 255, 255, 0.256);
+}
+.button{
+    height: 100%;
+    width: 100%;
+    background-color: rgba(240, 248, 255, 0.185);
+    border: 0cap;
+}

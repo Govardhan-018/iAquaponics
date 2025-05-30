@@ -2,12 +2,25 @@
 <html>
 <head>
   <title>Live ESP32 Data</title>
+  <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <h1>ESP32 Live Sensor Data</h1>
-  <div id="dataDisplay">Waiting for data...</div>
-  <button onclick="toggleLED(true)">Turn LED ON</button>
-  <button onclick="toggleLED(false)">Turn LED OFF</button>
+   <video autoplay muted loop id="back">
+        <source src="./videoplayback.mp4" type="video/mp4">
+        Your browser does not support HTML5 video.
+    </video>
+  <div class="container">
+<nav>iAquaponics</nav>
+<div class="box">
+  <div class="temp align"><h3>Temperature :</h3><h4 class="tdata"></h4></div>
+  <div class="tds align"><h3>TDS :</h3><h4 class="tddata"></h4></div>
+  <div class="level align"><h3>Water Level</h3><h4 class="ldata"></h4></div>
+  <div class="humidity align"><h3>Humidity</h3><h4 class="hdata"></h4></div>
+</div>
+<div class="bt">
+  <div class="manul"><button class="button" onclick="manual(true)">Manual</button></div>
+</div>
+  </div>
   <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
   <script src="./index.js"></script>
 </body>

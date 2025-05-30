@@ -40,14 +40,15 @@ io.on('connection', (socket) => {
   console.log('Web client connected via Socket.IO');
   socket.emit('newData', sensorData); // Send current data
 
-  socket.on('ledCommand', (data) => {
-    console.log('LED command received from client:', data);
-    io.emit('newData', data); // Update web clients
-  
-    // Also send to ESP32 via raw WebSocket
-    const msg = JSON.stringify({ type: 'led', state: data.state });
-    espClients.forEach(ws => ws.send(msg));
-  });
+ socket.on('motoron', (data) => {
+  console.log('Motor command received from client:', data.state);
+  espClients.forEach(ws => ws.send(JSON.stringify({ type: 'motor', state: data.state })));
+});
+
+socket.on('valve', (data) => {
+  console.log('Valve command received from client:', data.state);   
+  espClients.forEach(ws => ws.send(JSON.stringify({ type: 'valve', state: data.state })));
+});
 
   socket.on('disconnect', () => {
     console.log('Web client disconnected');
@@ -58,19 +59,6 @@ io.on('connection', (socket) => {
 wss.on('connection', (ws) => {
   console.log('ESP32 connected via raw WebSocket');
   espClients.push(ws);
-
-  // Send latest sensor data immediately
-  ws.send(JSON.stringify(sensorData));
-
-  ws.on('close', () => {
-    espClients = espClients.filter(c => c !== ws);
-    console.log('ESP32 disconnected');
-  });
-
-  ws.on('message', (msg) => {
-    console.log('Received from ESP32 via WebSocket:', msg);
-    // Handle if needed
-  });
 });
 
 // === Start Server ===
