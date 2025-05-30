@@ -6,14 +6,9 @@
 <body>
   <h1>ESP32 Live Sensor Data</h1>
   <div id="dataDisplay">Waiting for data...</div>
-
+  <button onclick="toggleLED(true)">Turn LED ON</button>
+  <button onclick="toggleLED(false)">Turn LED OFF</button>
   <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
-  <script>
-    const socket = io('http://192.168.173.131:3000'); // Change to server IP in real use
-
-    socket.on('newData', (data) => {
-      document.getElementById('dataDisplay').textContent = JSON.stringify(data);
-    });
-  </script>
+  <script src="./index.js"></script>
 </body>
 </html>
