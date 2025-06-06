@@ -41,12 +41,12 @@ io.on('connection', (socket) => {
   socket.emit('newData', sensorData); // Send current data
 
  socket.on('motoron', (data) => {
-  console.log('Motor command received from client:', data.state);
+  console.log('motor command received from client:', data.state);
   espClients.forEach(ws => ws.send(JSON.stringify({ type: 'motor', state: data.state })));
 });
 
 socket.on('valve', (data) => {
-  console.log('Valve command received from client:', data.state);   
+  console.log('valve command received from client:', data.state);   
   espClients.forEach(ws => ws.send(JSON.stringify({ type: 'valve', state: data.state })));
 });
 
@@ -62,5 +62,5 @@ wss.on('connection', (ws) => {
 });
 
 // === Start Server ===
-const PORT = 3000;
+const PORT = 3069;
 server.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

@@ -2,20 +2,34 @@
 #include <HTTPClient.h>
 #include <WebSocketsClient.h>
 #include <ArduinoJson.h>
+#include <DHT.h>
+#include <DHT_U.h>
+
+#define DHTPIN 14  // Digital pin connected to the DHT11
+#define DHTTYPE DHT11
+
+DHT dht(DHTPIN, DHTTYPE);
+
+#define trigPin 32
+#define echoPin 33
+
+const float tankHeight = 30.0;
 
 const char* ssid = "Suspected";
 const char* password = "just-go123";
 
 // For HTTP data upload
-const char* server = "192.168.173.131";
-String httpServer = "http://" + String(server) + ":3000/upload";
+const int port = 3069;
+const char* server = "192.168.204.131";
+String httpServer = "http://" + String(server) + ":3069/upload";
 
 
 // For WebSocket to receive LED control commands
 WebSocketsClient webSocket;
 
-const int motorPin = 2;
-const int valPin = 3;
+const int motorPin = 26;
+const int valPin = 25;
+const int tdsPin = 27;
 
 void webSocketEvent(WStype_t type, uint8_t* payload, size_t length) {
   if (type == WStype_TEXT) {
@@ -45,12 +59,15 @@ void webSocketEvent(WStype_t type, uint8_t* payload, size_t length) {
   }
 }
 
-
 void setup() {
   Serial.begin(115200);
+  dht.begin();
   WiFi.begin(ssid, password);
   pinMode(motorPin, OUTPUT);
   pinMode(valPin, OUTPUT);
+  pinMode(tdsPin, OUTPUT);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
   Serial.println("Connecting to WiFi...");
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
@@ -59,13 +76,46 @@ void setup() {
   Serial.println("\nWiFi connected");
 
   // CONNECT TO RAW WEBSOCKET (not socket.io)
-  webSocket.begin(server, 3000, "/espws");  // This must match server path
+  webSocket.begin(server, port, "/espws");  // This must match server path
   webSocket.onEvent(webSocketEvent);
   webSocket.setReconnectInterval(5000);  // Reconnect every 5 seconds if disconnected
 }
 
 unsigned long lastSentTime = 0;
 const long interval = 10000;  // Send sensor data every 10 sec
+
+//tds
+float readTds() {
+  int tdsValue = analogRead(tdsPin);
+  float tds = tdsValue * (3.3 / 4095.0);
+  Serial.println(tdsValue);
+  // float tds = (voltage * 1000) / 1.75;
+  return tds;
+}
+
+float level() {
+  long duration;
+  float distance, waterLevelPercent;
+
+  // Clear and trigger the ultrasonic sensor
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  // Measure the time of echo
+  duration = pulseIn(echoPin, HIGH);
+  distance = (duration * 0.0343) / 2;  // Distance to water surface in cm
+
+  // Calculate water level
+  if (distance >= 0 && distance <= tankHeight) {
+    waterLevelPercent = ((tankHeight - distance) / tankHeight) * 100;
+  } else {
+    waterLevelPercent = 0;  // out of range
+  }
+  return waterLevelPercent;
+}
 
 void loop() {
   webSocket.loop();
@@ -76,16 +126,20 @@ void loop() {
       lastSentTime = now;
 
       // Prepare dummy sensor data
-      String data = "{\"temp\":24.5,\"humidity\":55}";
+      float tds = readTds();
+      float humi = dht.readHumidity();
+      float temp = dht.readTemperature();
+      float waterLevel = level();
+      String data = "{\"temp\":" + String(temp) + ",\"humidity\":" + String(humi) + ",\"tds\": " + String(tds) + ",\"level\": " + String(waterLevel) + "}";
 
       HTTPClient http;
       http.begin(httpServer);
       http.addHeader("Content-Type", "application/json");
 
+      http.setTimeout(1000);  // Timeout in milliseconds
       int httpResponseCode = http.POST(data);
       Serial.print("HTTP POST Response: ");
       Serial.println(httpResponseCode);
-
       http.end();
     }
   }
