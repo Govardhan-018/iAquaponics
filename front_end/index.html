@@ -5,20 +5,16 @@
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-   <video autoplay muted loop id="back">
-        <source src="./videoplayback.mp4" type="video/mp4">
-        Your browser does not support HTML5 video.
-    </video>
   <div class="container">
 <nav>iAquaponics</nav>
 <div class="box">
-  <div class="temp align"><h3>Temperature :</h3><h4 class="tdata"></h4></div>
-  <div class="tds align"><h3>TDS :</h3><h4 class="tddata"></h4></div>
-  <div class="level align"><h3>Water Level</h3><h4 class="ldata"></h4></div>
-  <div class="humidity align"><h3>Humidity</h3><h4 class="hdata"></h4></div>
+  <div class="temp align"><h3>Temperature :</h3><h4 class="tdata data"></h4></div>
+  <div class="tds align"><h3>TDS :</h3><h4 class="tddata data"></h4></div>
+  <div class="level align"><h3>Water Level :</h3><h4 class="ldata data"></h4></div>
+  <div class="humidity align"><h3>Humidity :</h3><h4 class="hdata data"></h4></div>
 </div>
 <div class="bt">
-  <div class="manul"><button class="button" onclick="manual(true)">Manual</button></div>
+  <div class="manul"><button class="button" onclick="manual(0)">Manual</button></div>
 </div>
   </div>
   <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>

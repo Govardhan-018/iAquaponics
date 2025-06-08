@@ -11,9 +11,9 @@ socket.on('newData', (data) => {
 function motor(state) {
     socket.emit('motoron', { state: state });
     if (state == true) {
-        document.querySelector(".motoron").innerHTML = `<button class ="button" onclick="motor(0)">Turn Motor OFF</button>`
+        document.querySelector(".motoron").innerHTML = `<button class ="button" onclick="motor(0)">MotorOFF</button>`
     } else if (state == false) {
-        document.querySelector(".motoron").innerHTML = `<button class ="button"  onclick="motor(1)">Turn Motor ON</button>`
+        document.querySelector(".motoron").innerHTML = `<button class ="button"  onclick="motor(1)">MotorON</button>`
     }
 
 }
@@ -29,11 +29,11 @@ function val(state) {
 
 function manual(state) {
     socket.emit('manul', { state: state });
-    if (state) {
-        document.querySelector(".bt").innerHTML = ` <div class="manul"><button class="button" onclick="manual(false)">Auto</button></div>
+    if (state==1) {
+        document.querySelector(".bt").innerHTML = ` <div class="manul"><button class="button" onclick="manual(0)">Auto</button></div>
          <div class="valve"><button class="button" onclick="val(1)">ValveON</button></div>
-           <div class="motoron"><button class="button" onclick="motor(1)">Motor ON</button></div>`
+           <div class="motoron"><button class="button" onclick="motor(1)">MotorON</button></div>`
     } else if (!state) {
-        document.querySelector(".bt").innerHTML = ` <div class="manul"><button class="button" onclick="manual(true)">Manual</button></div>`
+        document.querySelector(".bt").innerHTML = ` <div class="manul"><button class="button" onclick="manual(1)">Manual</button></div>`
     }
 }

@@ -1,17 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 *{
     padding: 0%;
     margin: 0%;
     color: white;
-}
-
-#back{
-    position: fixed;
-    top: 0;
-    left: 0;
-    min-width: 100vw;
-    max-height: 100vh;
-    object-fit: cover;
-    z-index: -1;
+    font-family: "Roboto", sans-serif;
 }
 
 .container{
@@ -21,6 +13,7 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    background-color: rgb(4, 197, 133);
 }
 
 nav{
@@ -38,8 +31,8 @@ nav{
     grid-template-rows: 2fr 2fr;
 }
 .bt{
-    width: 35vw;
-    height: 10vh;
+    width: 60vw;
+    height: 7vh;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-rows: 1fr;
@@ -69,7 +62,6 @@ nav{
     flex-direction: column;
     align-items: center;
     margin: 20px;
-     background-color: rgba(255, 255, 255, 0.256);
 }
 h3{
     margin-bottom: 20px;
@@ -80,6 +72,60 @@ h4{
 .button{
     height: 100%;
     width: 100%;
-    background-color: rgba(240, 248, 255, 0.185);
-    border: 0cap;
+    background-color: rgba(240, 248, 255, 0);
+    border: 3px solid white;
+    border-radius: 20px;
+}
+.button:hover{
+     background-color: rgb(77, 243, 188);
+}
+@media only screen and (max-width: 1400px) {
+    nav{
+       font-size: 90px;
+    }
+    *{
+        margin: 0%;
+        padding: 0%;
+    }
+    body{
+       background-color: rgb(4, 197, 133); 
+    }
+   .container{
+    height: 70vh;
+    width: 100vw;
+    font-size: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+   }
+   .box{
+    height: 30vh;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+   }
+   .bt{
+    width: 80vw;
+    height: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 30px;
+    margin-top: 100px;
+   }
+   .button{
+     height: 80px;
+     width: 190px;
+     font-size: 40px;
+     border: 5px solid white;
+     border-radius: 30px;
+   }
+   .align{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+   }
+   h4{
+    font-size: 50px;
+   }
 }

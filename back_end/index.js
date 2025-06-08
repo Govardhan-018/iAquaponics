@@ -18,6 +18,7 @@ const wss = new WebSocket.Server({ server, path: '/espws' }); // WebSocket for E
 
 let sensorData = {};
 let espClients = [];
+let manul;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -26,29 +27,47 @@ app.use(bodyParser.json());
 app.post('/upload', (req, res) => {
   sensorData = req.body;
   console.log("Received from ESP32 (HTTP):", sensorData);
-  io.emit('newData', sensorData); // Send to Socket.IO clients
+  io.emit('newData', sensorData);
+  if (manul == 0) {
+    if (sensorData.level < 75) {
+      console.log("Auto mode: Turning motor ON");
+      espClients.forEach(ws => ws.send(JSON.stringify({ type: 'motor', state: 1 })));
+    } else if (sensorData.level > 75) {
+      console.log("Auto mode: Turning motor OFF");
+      espClients.forEach(ws => ws.send(JSON.stringify({ type: 'motor', state: 0 })));
+    }
+  } else {
+    espClients.forEach(ws => ws.send(JSON.stringify({ type: 'motor', state: 0 })));
+  }
   res.send({ status: 'Data received' });
 });
 
-// === Optional Polling Fallback ===
 app.get('/data', (req, res) => {
   res.send(sensorData);
 });
 
-// === Socket.IO Client (Frontend) ===
 io.on('connection', (socket) => {
   console.log('Web client connected via Socket.IO');
   socket.emit('newData', sensorData); // Send current data
 
- socket.on('motoron', (data) => {
-  console.log('motor command received from client:', data.state);
-  espClients.forEach(ws => ws.send(JSON.stringify({ type: 'motor', state: data.state })));
-});
+  socket.on('manul', (data) => {
+    manul = data.state;
+    console.log("Manul updated to:", manul);
+  });
 
-socket.on('valve', (data) => {
-  console.log('valve command received from client:', data.state);   
-  espClients.forEach(ws => ws.send(JSON.stringify({ type: 'valve', state: data.state })));
-});
+  socket.on('motoron', (data) => {
+    console.log('motor command received from client:', data.state);
+    if (manul == 1) {
+      espClients.forEach(ws => ws.send(JSON.stringify({ type: 'motor', state: data.state })));
+    }
+  });
+
+  socket.on('valve', (data) => {
+    console.log('valve command received from client:', data.state);
+    if (manul == 1) {
+      espClients.forEach(ws => ws.send(JSON.stringify({ type: 'valve', state: data.state })));
+    }
+  });
 
   socket.on('disconnect', () => {
     console.log('Web client disconnected');
