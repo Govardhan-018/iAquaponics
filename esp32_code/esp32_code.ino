@@ -82,8 +82,7 @@ void setup() {
 }
 
 unsigned long lastSentTime = 0;
-const long interval = 10000;  // Send sensor data every 10 sec
-
+const long interval = 500; 
 //tds
 float readTds() {
   int tdsValue = analogRead(tdsPin);

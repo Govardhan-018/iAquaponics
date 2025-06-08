@@ -36,8 +36,6 @@ app.post('/upload', (req, res) => {
       console.log("Auto mode: Turning motor OFF");
       espClients.forEach(ws => ws.send(JSON.stringify({ type: 'motor', state: 0 })));
     }
-  } else {
-    espClients.forEach(ws => ws.send(JSON.stringify({ type: 'motor', state: 0 })));
   }
   res.send({ status: 'Data received' });
 });
