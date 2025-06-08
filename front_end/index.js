@@ -30,10 +30,14 @@ function val(state) {
 function manual(state) {
     socket.emit('manul', { state: state });
     if (state == 1) {
+        document.querySelector("body").classList.add("dark")
+        document.querySelector(".container").classList.add("dark")
         document.querySelector(".bt").innerHTML = ` <div class="manul"><button class="button" onclick="manual(0)">Auto</button></div>
          <div class="valve"><button class="button" onclick="val(1)">ValveON</button></div>
            <div class="motoron"><button class="button" onclick="motor(1)">MotorON</button></div>`
     } else if (!state) {
         document.querySelector(".bt").innerHTML = ` <div class="manul"><button class="button" onclick="manual(1)">Manual</button></div>`
+        document.querySelector("body").classList.remove("dark")
+        document.querySelector(".container").classList.remove("dark")
     }
 }

@@ -36,6 +36,13 @@ app.post('/upload', (req, res) => {
       console.log("Auto mode: Turning motor OFF");
       espClients.forEach(ws => ws.send(JSON.stringify({ type: 'motor', state: 0 })));
     }
+    if (sensorData.tds > 150) {
+      console.log("Auto mode: Turning motor ON");
+      espClients.forEach(ws => ws.send(JSON.stringify({ type: 'valve', state: 1 })));
+    } else if (sensorData.tds < 150) {
+      console.log("Auto mode: Turning motor OFF");
+      espClients.forEach(ws => ws.send(JSON.stringify({ type: 'valve', state: 0 })));
+    }
   }
   res.send({ status: 'Data received' });
 });
