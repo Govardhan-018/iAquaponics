@@ -1,1 +1,5 @@
 This project presents iAquaponics, a compact, automated aquaponics monitoring and control system designed using the ESP32 microcontroller. The system integrates multiple environmental sensors including a DHT11 (for temperature and humidity), a TDS sensor (to assess water quality), and an ultrasonic sensor (to measure water level). A relay module simulates actuator control for a water pump and valve using LEDs. A key feature of the system is its dual operational modes—Automatic and Manual—accessible via a custom-built web dashboard. In Automatic Mode, the system autonomously activates the pump and valve based on real-time sensor data: the valve is triggered when TDS levels exceed 150 ppm, and the pump operates when the water level falls below 74%. In Manual Mode, users can directly control the pump and valve through the dashboard interface. The project demonstrates an efficient, low-cost solution for real-time environmental monitoring and remote control in aquaponic systems, with potential for scalability and integration into larger smart farming frameworks.
+
+Command In should be back_end /bash
+npm i
+nodemon index.js
